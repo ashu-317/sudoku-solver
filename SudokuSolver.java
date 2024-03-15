@@ -1,14 +1,27 @@
+import java.util.ArrayList;
+
 public class SudokuSolver {
+
+    static class Cell {
+        int row;
+        int col;
+
+        Cell(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
 
     public static boolean solveSudoku(int[][] board) {
         int N = board.length;
-        int[] emptyCell = findEmptyCell(board);
-        int row = emptyCell[0];
-        int col = emptyCell[1];
+        Cell emptyCell = findEmptyCell(board);
 
-        if (row == -1 && col == -1) {
+        if (emptyCell == null) {
             return true;
         }
+
+        int row = emptyCell.row;
+        int col = emptyCell.col;
 
         for (int num = 1; num <= 9; num++) {
             if (isSafe(board, row, col, num)) {
@@ -55,24 +68,22 @@ public class SudokuSolver {
         return false;
     }
 
-    private static int[] findEmptyCell(int[][] board) {
-        int[] emptyCell = {-1, -1};
+    private static Cell findEmptyCell(int[][] board) {
+        ArrayList<Cell> emptyCells = new ArrayList<>();
         for (int row = 0; row < board.length; row++) {
             for (int col = 0; col < board.length; col++) {
                 if (board[row][col] == 0) {
-                    emptyCell[0] = row;
-                    emptyCell[1] = col;
-                    return emptyCell;
+                    emptyCells.add(new Cell(row, col));
                 }
             }
         }
-        return emptyCell;
+        return emptyCells.isEmpty() ? null : emptyCells.get(0);
     }
 
     private static void printBoard(int[][] board) {
-        for (int row = 0; row < board.length; row++) {
-            for (int col = 0; col < board.length; col++) {
-                System.out.print(board[row][col] + " ");
+        for (int[] row : board) {
+            for (int cell : row) {
+                System.out.print(cell + " ");
             }
             System.out.println();
         }
